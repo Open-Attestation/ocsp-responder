@@ -43,6 +43,35 @@ When the document is to be revoked, an entry is added to the database of the OCS
 
 ## API
 
+`ocsp-sandbox.openattestation.com`
+
+### Parameters
+
+`reasonCode`
+
+| Reason               | Code |
+| -------------------- | ---- |
+| unspecified          | 0    |
+| keyCompromise        | 1    |
+| caCompromise         | 2    |
+| affiliationChanged   | 3    |
+| superseded           | 4    |
+| cessationOfOperation | 5    |
+| certificateHold      | 6    |
+| NOT USED             | 7    |
+| removeFromCRL        | 8    |
+| privilegeWithdrawn   | 9    |
+| aACompromise         | 10   |
+
+> **_NOTE:_** The code number 7 is not used
+
+`certificateStatus`
+
+| Status  | Description                                             |
+| ------- | ------------------------------------------------------- |
+| good    | certificate is not currently revoked                    |
+| revoked | certificate has been temporarily or permanently revoked |
+
 ### Inserting an entry
 
 `POST /`
