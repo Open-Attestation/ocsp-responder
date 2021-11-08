@@ -90,7 +90,9 @@ Sample request body:
 Sample response:
 
 ```
-OK
+{
+    "message": "certificate 54321 added to revocation list"
+}
 ```
 
 ### Querying certificate status
@@ -117,5 +119,7 @@ Make a `DELETE` request with the certificate identifier
 Sample response:
 
 ```
-OK
+{
+    "message": "succesfully removed certificate 54321 from the revocation list"
+}
 ```
