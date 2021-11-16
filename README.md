@@ -24,7 +24,7 @@ After deployment, the URL of the OCSP responder should be added in the `issuers.
         "name": "Demo Issuer",
         "revocation": {
           "type": "OCSP_RESPONDER",
-          "location": "https://www.ica.gov.sg/ocsp"
+          "location": "https://ocsp-sandbox.openattestation.com"
         },
         "identityProof": {
           "type": "DNS-DID",
