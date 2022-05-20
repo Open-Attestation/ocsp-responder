@@ -5,7 +5,7 @@ import hello from "@functions/hello";
 const serverlessConfiguration: AWS = {
   service: "ocsp-responder",
   frameworkVersion: "3",
-  plugins: ["serverless-esbuild"],
+  plugins: ["serverless-esbuild", "serverless-offline"],
   provider: {
     name: "aws",
     runtime: "nodejs14.x",
