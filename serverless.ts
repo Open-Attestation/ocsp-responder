@@ -1,11 +1,21 @@
 import type { AWS } from "@serverless/typescript";
 
+import { getArgumentValuesOrDefault } from "@libs/utils";
 import hello from "@functions/hello";
+
+const STAGE = getArgumentValuesOrDefault({
+  flag: "stage",
+  defaultValue: "dev",
+});
 
 const serverlessConfiguration: AWS = {
   service: "ocsp-responder",
   frameworkVersion: "3",
-  plugins: ["serverless-esbuild", "serverless-offline"],
+  plugins: [
+    "serverless-esbuild",
+    "serverless-dynamodb-local",
+    "serverless-offline",
+  ],
   provider: {
     name: "aws",
     runtime: "nodejs14.x",
@@ -16,6 +26,7 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
+      REVOCATION_TABLE: `ocsp-revocation-table-${STAGE}`,
     },
   },
   // import the function via paths
@@ -31,6 +42,37 @@ const serverlessConfiguration: AWS = {
       define: { "require.resolve": undefined },
       platform: "node",
       concurrency: 10,
+    },
+    dynamodb: {
+      stages: ["dev"],
+      start: {
+        port: 7000,
+        inMemory: true,
+        migrate: true,
+      },
+    },
+  },
+  resources: {
+    Resources: {
+      CertificateTable: {
+        Type: "AWS::DynamoDB::Table",
+        Properties: {
+          TableName: "${self:provider.environment.REVOCATION_TABLE}",
+          AttributeDefinitions: [
+            {
+              AttributeName: "documentHash",
+              AttributeType: "S",
+            },
+          ],
+          KeySchema: [
+            {
+              AttributeName: "documentHash",
+              KeyType: "HASH",
+            },
+          ],
+          BillingMode: "PAY_PER_REQUEST",
+        },
+      },
     },
   },
 };

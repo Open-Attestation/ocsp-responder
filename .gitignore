@@ -3,6 +3,7 @@ node_modules
 jspm_packages
 
 # Serverless directories
+.dynamodb
 .serverless
 
 # esbuild directories
