@@ -1,7 +1,7 @@
 import type { AWS } from "@serverless/typescript";
 
 import { getArgumentValuesOrDefault } from "@libs/utils";
-import hello from "@functions/hello";
+import { insert, query, remove } from "@functions/index";
 
 const STAGE = getArgumentValuesOrDefault({
   flag: "stage",
@@ -30,7 +30,7 @@ const serverlessConfiguration: AWS = {
     },
   },
   // import the function via paths
-  functions: { hello },
+  functions: { insert, query, remove },
   package: { individually: true },
   custom: {
     esbuild: {
