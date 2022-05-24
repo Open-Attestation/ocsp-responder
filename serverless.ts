@@ -17,16 +17,22 @@ const serverlessConfiguration: AWS = {
     "serverless-offline",
   ],
   provider: {
+    deploymentBucket: "notarise-serverless-deployment"
     name: "aws",
     runtime: "nodejs14.x",
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
+      metrics: true,
+      apiKeys: []
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
       REVOCATION_TABLE: `ocsp-revocation-table-${STAGE}`,
+    },
+    tracing: {
+      lambda: true
     },
   },
   // import the function via paths
@@ -71,8 +77,51 @@ const serverlessConfiguration: AWS = {
             },
           ],
           BillingMode: "PAY_PER_REQUEST",
+          SSESpecification: {
+            KMSMasterKeyId: {
+              "Fn::GetAtt": ["CertificateTableKey", "Arn"],
+            },
+            SSEEnabled: true,
+            SSEType: "KMS"
+          }
         },
       },
+      CertificateTableKey: {
+        Type: "AWS::KMS::Key",
+        Properties: {
+            EnableKeyRotation: true,
+            KeyPolicy: {
+                Version: "2012-10-17",
+                Statement: [
+                    {
+                        Effect: "Allow",
+                        Principal: {
+                            AWS: "arn:aws:iam::${self:custom.aws.accountId}:root"
+                        },
+                        Action: "kms:*",
+                        Resource: "*"
+                    },
+                    {
+                        Effect: "Allow",
+                        Principal: {
+                            AWS: "*"
+                        },
+                        Action: [
+                            "kms:Encrypt",
+                            "kms:Decrypt"
+                        ],
+                        Resource: "*",
+                        Condition: {
+                            StringEquals: {
+                                "kms:CallerAccount": "${self:custom.aws.accountId}",
+                                "kms:ViaService": "dynamodb.${self:custom.aws.region}.amazonaws.com"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    },
     },
   },
 };
