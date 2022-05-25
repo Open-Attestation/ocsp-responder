@@ -9,8 +9,11 @@ const STAGE = getArgumentValuesOrDefault({
 });
 
 const serverlessConfiguration = async (): Promise<AWS> => {
+  const service = `ocsp-responder-${STAGE}`;
+
   return {
-    service: "ocsp-responder",
+    useDotenv: true,
+    service,
     frameworkVersion: "3",
     plugins: [
       "serverless-bundle",
@@ -18,7 +21,7 @@ const serverlessConfiguration = async (): Promise<AWS> => {
       "serverless-offline",
     ],
     provider: {
-      deploymentBucket: "notarise-serverless-deployment",
+      deploymentBucket: "${env:DEPLOYMENT_BUCKET}",
       name: "aws",
       runtime: "nodejs14.x",
       apiGateway: {
@@ -32,10 +35,18 @@ const serverlessConfiguration = async (): Promise<AWS> => {
         NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
         REVOCATION_TABLE: `ocsp-revocation-table-${STAGE}`,
       },
+      iam: {
+        role: {
+          permissionsBoundary: "${env:ROLE_PERMISSIONS_BOUNDARY, ''}"
+        }
+      },
       tracing: {
         lambda: true,
         apiGateway: true
       },
+      versionFunctions: false,
+      logRetentionInDays: 365,
+      memorySize: 256
     },
     // import the function via paths
     functions: { insert, query, remove },
@@ -43,8 +54,9 @@ const serverlessConfiguration = async (): Promise<AWS> => {
     custom: {
       bundle: {
         esbuild: true,
-        forceExclude:
-          - "aws-sdk"
+        forceExclude: [
+          "aws-sdk"
+        ]
       },
       dynamodb: {
         stages: ["dev"],
@@ -75,53 +87,14 @@ const serverlessConfiguration = async (): Promise<AWS> => {
             ],
             BillingMode: "PAY_PER_REQUEST",
             SSESpecification: {
-              KMSMasterKeyId: {
-                "Fn::GetAtt": ["CertificateTableKey", "Arn"],
-              },
               SSEEnabled: true,
               SSEType: "KMS"
             }
           },
-        },
-        CertificateTableKey: {
-          Type: "AWS::KMS::Key",
-          Properties: {
-            EnableKeyRotation: true,
-            KeyPolicy: {
-              Version: "2012-10-17",
-              Statement: [
-                {
-                  Effect: "Allow",
-                  Principal: {
-                    AWS: "arn:aws:iam::${self:custom.aws.accountId}:root"
-                  },
-                  Action: "kms:*",
-                  Resource: "*"
-                },
-                {
-                  Effect: "Allow",
-                  Principal: {
-                    AWS: "*"
-                  },
-                  Action: [
-                    "kms:Encrypt",
-                    "kms:Decrypt"
-                  ],
-                  Resource: "*",
-                  Condition: {
-                    StringEquals: {
-                      "kms:CallerAccount": "${self:custom.aws.accountId}",
-                      "kms:ViaService": "dynamodb.${self:custom.aws.region}.amazonaws.com"
-                    }
-                  }
-                }
-              ]
-            }
-          }
         },
       },
     },
   }
 };
 
-module.exports = serverlessConfiguration;
+module.exports = serverlessConfiguration();

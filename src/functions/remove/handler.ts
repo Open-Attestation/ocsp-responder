@@ -6,7 +6,7 @@ import { middyfy } from "@libs/lambda";
 import { client } from "@services/dynamoDb";
 
 const remove: ValidatedEventAPIGatewayProxyEvent<void> = async (event) => {
-  let { documentHash } = event.pathParameters;
+  const { documentHash } = event.pathParameters;
 
   if (!documentHash) {
     throw new createError.BadRequest(`documentHash (string) required`);

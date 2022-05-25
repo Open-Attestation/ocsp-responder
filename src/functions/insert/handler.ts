@@ -12,7 +12,7 @@ const REASON_CODES = [...Array(11).keys()];
 const insert: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (
   event
 ) => {
-  let { documentHash, reasonCode } = event.body;
+  const { documentHash, reasonCode } = event.body;
 
   if (!documentHash || !reasonCode) {
     throw new createError.BadRequest(
