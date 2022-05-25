@@ -1,0 +1,5 @@
+services:
+  private:
+    path: app/private
+  public:
+    path: app/public
