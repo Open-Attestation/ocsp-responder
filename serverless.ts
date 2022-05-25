@@ -12,7 +12,7 @@ const serverlessConfiguration: AWS = {
   service: "ocsp-responder",
   frameworkVersion: "3",
   plugins: [
-    "serverless-esbuild",
+    "serverless-bundle",
     "serverless-dynamodb-local",
     "serverless-offline",
   ],
@@ -39,15 +39,10 @@ const serverlessConfiguration: AWS = {
   functions: { insert, query, remove },
   package: { individually: true },
   custom: {
-    esbuild: {
-      bundle: true,
-      minify: false,
-      sourcemap: true,
-      exclude: ["aws-sdk"],
-      target: "node14",
-      define: { "require.resolve": undefined },
-      platform: "node",
-      concurrency: 10,
+    bundle: {
+      esbuild: true,
+      forceExclude:
+        - "aws-sdk"
     },
     dynamodb: {
       stages: ["dev"],
