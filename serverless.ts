@@ -9,12 +9,11 @@ const STAGE = getArgumentValuesOrDefault({
 });
 
 const serverlessConfiguration = async (): Promise<AWS> => {
-  const service = `ocsp-responder-${STAGE}`;
+  const service = `ocsp-responder`;
 
   return {
     useDotenv: true,
     service,
-    frameworkVersion: "3",
     plugins: [
       "serverless-bundle",
       "serverless-dynamodb-local",
@@ -24,11 +23,12 @@ const serverlessConfiguration = async (): Promise<AWS> => {
       deploymentBucket: "${env:DEPLOYMENT_BUCKET}",
       name: "aws",
       runtime: "nodejs14.x",
+      region: "ap-southeast-1",
       apiGateway: {
         minimumCompressionSize: 1024,
         shouldStartNameWithService: true,
         metrics: true,
-        apiKeys: []
+        apiKeys: [`${service}-${STAGE}`]
       },
       environment: {
         AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
@@ -37,7 +37,7 @@ const serverlessConfiguration = async (): Promise<AWS> => {
       },
       iam: {
         role: {
-          permissionsBoundary: "${env:ROLE_PERMISSIONS_BOUNDARY, ''}"
+          permissionsBoundary: "${env:ROLE_PERMISSIONS_BOUNDARY,''}"
         }
       },
       tracing: {
@@ -50,13 +50,12 @@ const serverlessConfiguration = async (): Promise<AWS> => {
     },
     // import the function via paths
     functions: { insert, query, remove },
-    package: { individually: true },
     custom: {
       bundle: {
         esbuild: true,
-        forceExclude: [
-          "aws-sdk"
-        ]
+        // forceExclude: [
+        //   "aws-sdk"
+        // ]
       },
       dynamodb: {
         stages: ["dev"],
