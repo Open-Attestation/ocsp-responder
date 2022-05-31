@@ -89,7 +89,7 @@ Insert an entry to the revocation table:
     <td><b>Request Body</b></td>
     <td>
     <pre><code>{
-  "documentHash": "13e53a698cd616a4df6781d6e61ce851c06ffe27db11b4bbcc7e7b4f76935a53",
+  "documentHash": "0x13e53a698cd616a4df6781d6e61ce851c06ffe27db11b4bbcc7e7b4f76935a53",
   "reasonCode": 3
 }</code></pre></td>
   </tr>
@@ -97,7 +97,7 @@ Insert an entry to the revocation table:
     <td><b>Response Body</b></td>
     <td><pre><code>{
   "success": true,
-  "documentHash": "13e53a698cd616a4df6781d6e61ce851c06ffe27db11b4bbcc7e7b4f76935a53",
+  "documentHash": "0x13e53a698cd616a4df6781d6e61ce851c06ffe27db11b4bbcc7e7b4f76935a53",
   "message": "documentHash inserted into revocation table"
 }</code></pre></td>
   </tr>
@@ -122,7 +122,7 @@ Query for an entry in the revocation table:
     <td><b>Response Body</b></td>
     <td><pre><code>{
   "revoked": true,
-  "documentHash": "13e53a698cd616a4df6781d6e61ce851c06ffe27db11b4bbcc7e7b4f76935a53",
+  "documentHash": "0x13e53a698cd616a4df6781d6e61ce851c06ffe27db11b4bbcc7e7b4f76935a53",
   "reasonCode": 3
 }</code></pre></td>
   </tr>
@@ -147,7 +147,7 @@ Remove an entry from the revocation table:
     <td><b>Response Body</b></td>
     <td><pre><code>{
   "success": true,
-  "documentHash": "13e53a698cd616a4df6781d6e61ce851c06ffe27db11b4bbcc7e7b4f76935a53",
+  "documentHash": "0x13e53a698cd616a4df6781d6e61ce851c06ffe27db11b4bbcc7e7b4f76935a53",
   "message": "documentHash removed from revocation table"
 }</code></pre></td>
   </tr>
