@@ -11,6 +11,7 @@ export default <AWS["functions"][string]>{
         method: "post",
         path: "/",
         cors: true,
+        private: true,
         request: {
           schemas: {
             "application/json": {
