@@ -1,4 +1,11 @@
+# package directories
 node_modules
+jspm_packages
 
+# Serverless directories
+.dynamodb
 .serverless
-.webpack
+
+# esbuild directories
+.esbuild
+.env
