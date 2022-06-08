@@ -40,7 +40,23 @@ const serverlessConfiguration = async (): Promise<AWS> => {
       iam: {
         role: {
           permissionsBoundary: "${env:ROLE_PERMISSIONS_BOUNDARY,''}"
-        }
+          statements: [
+            {
+              Effect: "Allow",
+              Action: [
+                "dynamodb:GetItem",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem"
+              ],
+              Resource: [
+                { 
+                  "Fn::GetAtt": ["CertificateTable", "Arn"] 
+                }
+              ]
+            }
+          ]
+        },
       },
       tracing: {
         lambda: true,
