@@ -30,6 +30,7 @@
     "esbuild": "^0.14.39",
     "json-schema-to-ts": "^2.5.1",
     "serverless": "^3.18.2",
+    "serverless-domain-manager": "^6.0.3",
     "serverless-dynamodb-local": "^0.2.40",
     "serverless-offline": "^8.8.0",
     "ts-node": "^10.8.0",
