@@ -10,6 +10,7 @@ const STAGE = getArgumentValuesOrDefault({
 
 const serverlessConfiguration = async (): Promise<AWS> => {
   const service = `ocsp-responder`;
+  const enableCustomDomain = process.env.DOMAIN ? true : false;
 
   return {
     useDotenv: true,
@@ -17,6 +18,7 @@ const serverlessConfiguration = async (): Promise<AWS> => {
     plugins: [
       "serverless-bundle",
       "serverless-dynamodb-local",
+      "serverless-domain-manager",
       "serverless-offline",
     ],
     provider: {
@@ -65,6 +67,13 @@ const serverlessConfiguration = async (): Promise<AWS> => {
           migrate: true,
         },
       },
+      customDomain: {
+        domainName: "${env:DOMAIN, ''}",
+        stage: `${STAGE}`,
+        createRoute53Record: enableCustomDomain,
+        endpointType: "regional",
+        autoDomain: enableCustomDomain
+      }
     },
     resources: {
       Resources: {
