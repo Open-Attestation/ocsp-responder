@@ -30,7 +30,7 @@ const serverlessConfiguration = async (): Promise<AWS> => {
         minimumCompressionSize: 1024,
         shouldStartNameWithService: true,
         metrics: true,
-        apiKeys: [`${service}-${STAGE}`]
+        apiKeys: [`${service}-${STAGE}`],
       },
       environment: {
         AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
@@ -39,7 +39,7 @@ const serverlessConfiguration = async (): Promise<AWS> => {
       },
       iam: {
         role: {
-          permissionsBoundary: "${env:ROLE_PERMISSIONS_BOUNDARY,''}"
+          permissionsBoundary: "${env:ROLE_PERMISSIONS_BOUNDARY,''}",
           statements: [
             {
               Effect: "Allow",
@@ -47,24 +47,24 @@ const serverlessConfiguration = async (): Promise<AWS> => {
                 "dynamodb:GetItem",
                 "dynamodb:PutItem",
                 "dynamodb:UpdateItem",
-                "dynamodb:DeleteItem"
+                "dynamodb:DeleteItem",
               ],
               Resource: [
-                { 
-                  "Fn::GetAtt": ["CertificateTable", "Arn"] 
-                }
-              ]
-            }
-          ]
+                {
+                  "Fn::GetAtt": ["CertificateTable", "Arn"],
+                },
+              ],
+            },
+          ],
         },
       },
       tracing: {
         lambda: true,
-        apiGateway: true
+        apiGateway: true,
       },
       versionFunctions: false,
       logRetentionInDays: 365,
-      memorySize: 256
+      memorySize: 256,
     },
     // import the function via paths
     functions: { insert, query, remove },
@@ -88,8 +88,8 @@ const serverlessConfiguration = async (): Promise<AWS> => {
         stage: `${STAGE}`,
         createRoute53Record: enableCustomDomain,
         endpointType: "regional",
-        autoDomain: enableCustomDomain
-      }
+        autoDomain: enableCustomDomain,
+      },
     },
     resources: {
       Resources: {
@@ -112,13 +112,13 @@ const serverlessConfiguration = async (): Promise<AWS> => {
             BillingMode: "PAY_PER_REQUEST",
             SSESpecification: {
               SSEEnabled: true,
-              SSEType: "KMS"
-            }
+              SSEType: "KMS",
+            },
           },
         },
       },
     },
-  }
+  };
 };
 
 module.exports = serverlessConfiguration();
