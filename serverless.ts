@@ -23,7 +23,7 @@ const serverlessConfiguration = async (): Promise<AWS> => {
       "serverless-offline",
     ],
     provider: {
-      deploymentBucket: "${env:DEPLOYMENT_BUCKET}",
+      deploymentBucket: "${env:DEPLOYMENT_BUCKET,''}",
       name: "aws",
       runtime: "nodejs14.x",
       region: "ap-southeast-1",
