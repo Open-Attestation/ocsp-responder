@@ -13,6 +13,7 @@ const serverlessConfiguration = async (): Promise<AWS> => {
   const enableCustomDomain = process.env.DOMAIN ? true : false;
 
   return {
+    frameworkVersion: '3',
     useDotenv: true,
     service,
     plugins: [
