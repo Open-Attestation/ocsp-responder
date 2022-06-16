@@ -8,4 +8,6 @@ jspm_packages
 
 # esbuild directories
 .esbuild
+.webpack
+
 .env
