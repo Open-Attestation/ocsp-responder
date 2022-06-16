@@ -2,18 +2,19 @@ import type { AWS } from "@serverless/typescript";
 
 import { getArgumentValuesOrDefault } from "@libs/utils";
 import { insert, query, remove } from "@functions/index";
+import "dotenv/config";
 
-const STAGE = getArgumentValuesOrDefault({
+const stage = getArgumentValuesOrDefault({
   flag: "stage",
   defaultValue: "dev",
 });
 
 const serverlessConfiguration = async (): Promise<AWS> => {
   const service = `ocsp-responder`;
-  const enableCustomDomain = process.env.DOMAIN ? true : false;
 
-  return {
+  let config : AWS = {
     frameworkVersion: '3',
+    configValidationMode: 'error',
     useDotenv: true,
     service,
     plugins: [
@@ -23,7 +24,7 @@ const serverlessConfiguration = async (): Promise<AWS> => {
       "serverless-offline",
     ],
     provider: {
-      deploymentBucket: "${env:DEPLOYMENT_BUCKET,''}",
+      stage,
       name: "aws",
       runtime: "nodejs14.x",
       region: "ap-southeast-1",
@@ -31,16 +32,15 @@ const serverlessConfiguration = async (): Promise<AWS> => {
         minimumCompressionSize: 1024,
         shouldStartNameWithService: true,
         metrics: true,
-        apiKeys: [`${service}-${STAGE}`],
+        apiKeys: [`${service}-${stage}`],
       },
       environment: {
         AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
         NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
-        REVOCATION_TABLE: `ocsp-revocation-table-${STAGE}`,
+        REVOCATION_TABLE: "ocsp-revocation-table-${self:provider.stage}",
       },
       iam: {
         role: {
-          permissionsBoundary: "${env:ROLE_PERMISSIONS_BOUNDARY,''}",
           statements: [
             {
               Effect: "Allow",
@@ -85,11 +85,12 @@ const serverlessConfiguration = async (): Promise<AWS> => {
         },
       },
       customDomain: {
-        domainName: "${env:DOMAIN, ''}",
-        stage: `${STAGE}`,
-        createRoute53Record: enableCustomDomain,
+        domainName: "${env:DOMAIN, 'oa.com'}",
+        stage: "${self:provider.stage}",
+        createRoute53Record: "${env:CREATE_ROUTE53, false}",
         endpointType: "regional",
-        autoDomain: enableCustomDomain,
+        autoDomain: "${env:AUTO_DOMAIN, false}",
+        enabled: "${env:DOMAIN_ENABLED, false}"
       },
     },
     resources: {
@@ -120,6 +121,16 @@ const serverlessConfiguration = async (): Promise<AWS> => {
       },
     },
   };
+
+  if (process.env.ROLE_PERMISSIONS_BOUNDARY) {
+    config.provider.iam.role["permissionsBoundary"] = process.env.ROLE_PERMISSIONS_BOUNDARY; 
+  }
+
+  if (process.env.DEPLOYMENT_BUCKET) {
+    config.provider.deploymentBucket = process.env.DEPLOYMENT_BUCKET; 
+  }
+
+  return config;
 };
 
 module.exports = serverlessConfiguration();
