@@ -9,7 +9,7 @@ export default <AWS["functions"][string]>{
       http: {
         method: "get",
         path: "/{documentHash}",
-        cors: true,
+        cors: { origin: "*" },
       },
     },
   ],
