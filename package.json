@@ -17,6 +17,7 @@
     "@middy/http-json-body-parser": "^3.0.3",
     "aws-sdk": "^2.1141.0",
     "http-errors": "^2.0.0",
+    "serverless-slic-watch-plugin": "^1.2.0",
     "yargs": "^17.5.1"
   },
   "devDependencies": {

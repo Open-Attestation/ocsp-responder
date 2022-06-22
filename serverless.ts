@@ -18,6 +18,7 @@ const serverlessConfiguration = async (): Promise<AWS> => {
     useDotenv: true,
     service,
     plugins: [
+      "serverless-slic-watch-plugin",
       "serverless-bundle",
       "serverless-dynamodb-local",
       "serverless-domain-manager",
@@ -128,6 +129,35 @@ const serverlessConfiguration = async (): Promise<AWS> => {
 
   if (process.env.DEPLOYMENT_BUCKET) {
     config.provider.deploymentBucket = process.env.DEPLOYMENT_BUCKET; 
+  }
+
+  if (process.env.CLOUDWATCH_SNS) {
+    config.custom.slicWatch = {
+      topicArn: process.env.CLOUDWATCH_SNS,
+      alarms: {
+        enabled: true,
+        Period: 60,
+        EvaluationPeriods: 5,
+        ComparisonOperator: "GreaterThanThreshold",
+        Lambda: {
+          enabled: false
+        },
+        ApiGateway: {
+          "5XXError": {
+            Statistic: "Average",
+            Threshold: 0.15
+          },
+          "4XXError": {
+            Statistic: "Average",
+            Threshold: 0.15
+          },
+          Latency: {
+            EvaluationPeriods: 10,
+            Statistic: "Average",
+            ExtendedStatistic: null
+          }
+        }
+      }
   }
 
   return config;
