@@ -71,6 +71,9 @@ const serverlessConfiguration = async (): Promise<AWS> => {
     // import the function via paths
     functions: { insert, query, remove },
     custom: {
+      slicWatch: {
+        enabled: false
+      },
       bundle: {
         esbuild: true,
         // forceExclude: [
@@ -134,6 +137,7 @@ const serverlessConfiguration = async (): Promise<AWS> => {
   if (process.env.CLOUDWATCH_SNS) {
     config.custom.slicWatch = {
       topicArn: process.env.CLOUDWATCH_SNS,
+      enabled: true,
       alarms: {
         enabled: true,
         Period: 60,
