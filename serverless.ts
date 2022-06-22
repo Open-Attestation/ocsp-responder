@@ -158,6 +158,7 @@ const serverlessConfiguration = async (): Promise<AWS> => {
           }
         }
       }
+    }
   }
 
   return config;
