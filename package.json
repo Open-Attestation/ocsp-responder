@@ -17,7 +17,6 @@
     "@middy/http-json-body-parser": "^3.0.3",
     "aws-sdk": "^2.1141.0",
     "http-errors": "^2.0.0",
-    "serverless-slic-watch-plugin": "^1.2.0",
     "yargs": "^17.5.1"
   },
   "devDependencies": {
@@ -33,6 +32,7 @@
     "serverless-domain-manager": "^6.0.3",
     "serverless-dynamodb-local": "^0.2.40",
     "serverless-offline": "^8.8.0",
+    "serverless-slic-watch-plugin": "^1.2.0",
     "serverless-vpc-discovery": "^4.0.2",
     "ts-node": "^10.8.0",
     "tsconfig-paths": "^4.0.0",
