@@ -12,7 +12,7 @@ const stage = getArgumentValuesOrDefault({
 const serverlessConfiguration = async (): Promise<AWS> => {
   const service = `ocsp-responder`;
 
-  let config : AWS = {
+  const config : AWS = {
     frameworkVersion: '3',
     configValidationMode: 'error',
     useDotenv: true,
