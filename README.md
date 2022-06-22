@@ -6,6 +6,8 @@ The verification library ([oa-verify](https://www.npmjs.com/package/@govtechsg/o
 
 ## Prerequisites
 
+Rename .env.example to .env
+
 To start revoking documents via an OCSP Responder, ensure that the revocation `type` and `location` has been populated with the following values:
 
 - `revocation.type` : `OCSP_RESPONDER`
