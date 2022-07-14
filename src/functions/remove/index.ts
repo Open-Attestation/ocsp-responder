@@ -10,7 +10,7 @@ export default <AWS["functions"][string]>{
         method: "delete",
         path: "/{documentHash}",
         cors: true,
-        private: true
+        private: true,
       },
     },
   ],
