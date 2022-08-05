@@ -28,7 +28,7 @@ const query: ValidatedEventAPIGatewayProxyEvent<void> = async (event) => {
     Object.getPrototypeOf(data) === Object.prototype
   ) {
     return formatJSONResponse({ revoked: false, documentHash });
-  } else if (data.Item && data.Item.documentHash && data.Item.reasonCode) {
+  } else if (data.Item && data.Item.documentHash && data.Item.reasonCode !== undefined) {
     return formatJSONResponse({
       revoked: true,
       documentHash: data.Item.documentHash,
