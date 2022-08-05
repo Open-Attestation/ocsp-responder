@@ -12,7 +12,7 @@ const REASON_CODES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const insert: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
   const { documentHash, reasonCode } = event.body;
 
-  if (!documentHash || !reasonCode) {
+  if (!documentHash || reasonCode === undefined) {
     throw new createError.BadRequest(`documentHash (string) and reasonCode (number) required`);
   } else if (!REASON_CODES.includes(reasonCode)) {
     throw new createError.BadRequest(`Invalid reasonCode. Please use one of the following values: ${REASON_CODES}`);
