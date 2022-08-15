@@ -23,6 +23,7 @@ const serverlessConfiguration = async (): Promise<AWS> => {
       "serverless-dynamodb-local",
       "serverless-domain-manager",
       "serverless-offline",
+      "serverless-stack-termination-protection",
     ],
     provider: {
       stage,
@@ -64,13 +65,26 @@ const serverlessConfiguration = async (): Promise<AWS> => {
         lambda: true,
         apiGateway: true,
       },
+      logs: {
+        restApi: {
+          accessLogging: true,
+          executionLogging: true,
+          level: "INFO",
+          roleManagedExternally: true,
+          fullExecutionData: false,
+        },
+      },
       versionFunctions: false,
+      deploymentMethod: "direct",
       logRetentionInDays: 365,
       memorySize: 256,
     },
     // import the function via paths
     functions: { insert, query, remove },
     custom: {
+      serverlessTerminationProtection: {
+        stages: ["production", "stg"],
+      },
       slicWatch: {
         enabled: false
       },
