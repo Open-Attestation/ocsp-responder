@@ -1,3 +1,3 @@
 before_compile:
-  - n 18
+  - n 14
   - npm i --force -g serverless@latest 
