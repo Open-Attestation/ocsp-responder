@@ -144,10 +144,6 @@ const serverlessConfiguration = async (): Promise<AWS> => {
     config.provider.iam.role["permissionsBoundary"] = process.env.ROLE_PERMISSIONS_BOUNDARY; 
   }
 
-  if (process.env.DEPLOYMENT_BUCKET) {
-    config.provider.deploymentBucket = process.env.DEPLOYMENT_BUCKET; 
-  }
-
   if (process.env.CLOUDWATCH_SNS) {
     config.custom.slicWatch = {
       topicArn: process.env.CLOUDWATCH_SNS,
