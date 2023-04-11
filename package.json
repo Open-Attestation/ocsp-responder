@@ -4,7 +4,6 @@
   "description": "OCSP Responder Reference Implementation",
   "main": "serverless.ts",
   "scripts": {
-    "postinstall": "npm i -g serverless",
     "dev": "cross-env STAGE=dev sls offline start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
