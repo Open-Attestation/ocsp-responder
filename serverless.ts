@@ -28,7 +28,7 @@ const serverlessConfiguration = async (): Promise<AWS> => {
     provider: {
       stage,
       name: "aws",
-      runtime: "nodejs14.x",
+      runtime: "nodejs18.x",
       region: "ap-southeast-1",
       apiGateway: {
         minimumCompressionSize: 1024,

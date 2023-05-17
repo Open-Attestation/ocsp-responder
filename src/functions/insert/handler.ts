@@ -3,7 +3,7 @@ import createError from "http-errors";
 import type { ValidatedEventAPIGatewayProxyEvent } from "@libs/api-gateway";
 import { formatJSONResponse } from "@libs/api-gateway";
 import { middyfy } from "@libs/lambda";
-import { client } from "@services/dynamoDb";
+import { putItem } from "@services/dynamoDb";
 
 import schema from "./schema";
 
@@ -18,15 +18,14 @@ const insert: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) 
     throw new createError.BadRequest(`Invalid reasonCode. Please use one of the following values: ${REASON_CODES}`);
   }
 
-  await client
-    .put({
+  try{
+    await putItem({
       TableName: process.env.REVOCATION_TABLE,
       Item: { documentHash, reasonCode },
     })
-    .promise()
-    .catch((e) => {
-      throw new createError.InternalServerError(e);
-    });
+  } catch (e){
+    throw new createError.InternalServerError(e);
+  }
 
   return formatJSONResponse({
     success: true,
