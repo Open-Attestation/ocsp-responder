@@ -18,7 +18,6 @@ const serverlessConfiguration = async (): Promise<AWS> => {
     useDotenv: true,
     service,
     plugins: [
-      "serverless-slic-watch-plugin",
       "serverless-bundle",
       "serverless-dynamodb-local",
       "serverless-domain-manager",
@@ -28,7 +27,7 @@ const serverlessConfiguration = async (): Promise<AWS> => {
     provider: {
       stage,
       name: "aws",
-      runtime: "nodejs14.x",
+      runtime: "nodejs18.x",
       region: "ap-southeast-1",
       apiGateway: {
         minimumCompressionSize: 1024,
@@ -85,14 +84,8 @@ const serverlessConfiguration = async (): Promise<AWS> => {
       serverlessTerminationProtection: {
         stages: ["production", "stg"],
       },
-      slicWatch: {
-        enabled: false
-      },
       bundle: {
         esbuild: true,
-        // forceExclude: [
-        //   "aws-sdk"
-        // ]
       },
       dynamodb: {
         stages: ["dev"],
@@ -146,37 +139,6 @@ const serverlessConfiguration = async (): Promise<AWS> => {
 
   if (process.env.DEPLOYMENT_BUCKET) {
     config.provider.deploymentBucket = process.env.DEPLOYMENT_BUCKET; 
-  }
-
-  if (process.env.CLOUDWATCH_SNS) {
-    config.custom.slicWatch = {
-      topicArn: process.env.CLOUDWATCH_SNS,
-      enabled: true,
-      alarms: {
-        enabled: true,
-        Period: 60,
-        EvaluationPeriods: 5,
-        ComparisonOperator: "GreaterThanThreshold",
-        Lambda: {
-          enabled: false
-        },
-        ApiGateway: {
-          "5XXError": {
-            Statistic: "Average",
-            Threshold: 0.15
-          },
-          "4XXError": {
-            Statistic: "Average",
-            Threshold: 0.15
-          },
-          Latency: {
-            EvaluationPeriods: 10,
-            Statistic: "Average",
-            ExtendedStatistic: null
-          }
-        }
-      }
-    }
   }
 
   return config;

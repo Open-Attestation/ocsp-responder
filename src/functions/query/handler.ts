@@ -3,7 +3,7 @@ import createError from "http-errors";
 import type { ValidatedEventAPIGatewayProxyEvent } from "@libs/api-gateway";
 import { formatJSONResponse } from "@libs/api-gateway";
 import { middyfy } from "@libs/lambda";
-import { client } from "@services/dynamoDb";
+import { getItem } from "@services/dynamoDb";
 
 const query: ValidatedEventAPIGatewayProxyEvent<void> = async (event) => {
   const { documentHash } = event.pathParameters;
@@ -12,15 +12,16 @@ const query: ValidatedEventAPIGatewayProxyEvent<void> = async (event) => {
     throw new createError.BadRequest(`documentHash (string) required`);
   }
 
-  const data = await client
-    .get({
+  let data: Record<string, any>;
+
+  try{
+    data = await getItem({
       TableName: process.env.REVOCATION_TABLE,
       Key: { documentHash },
-    })
-    .promise()
-    .catch((e) => {
-      throw new createError.InternalServerError(e);
     });
+  } catch (e){
+    throw new createError.InternalServerError(e);
+  }
 
   if (
     // When no entry is found, an empty object is returned (E.g. `{}`)
@@ -28,11 +29,11 @@ const query: ValidatedEventAPIGatewayProxyEvent<void> = async (event) => {
     Object.getPrototypeOf(data) === Object.prototype
   ) {
     return formatJSONResponse({ revoked: false, documentHash });
-  } else if (data.Item && data.Item.documentHash && data.Item.reasonCode !== undefined) {
+  } else if (data && data.documentHash && data.reasonCode !== undefined) {
     return formatJSONResponse({
       revoked: true,
-      documentHash: data.Item.documentHash,
-      reasonCode: data.Item.reasonCode,
+      documentHash: data.documentHash,
+      reasonCode: data.reasonCode,
     });
   } else {
     throw new createError.InternalServerError(

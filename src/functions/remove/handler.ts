@@ -3,7 +3,7 @@ import createError from "http-errors";
 import type { ValidatedEventAPIGatewayProxyEvent } from "@libs/api-gateway";
 import { formatJSONResponse } from "@libs/api-gateway";
 import { middyfy } from "@libs/lambda";
-import { client } from "@services/dynamoDb";
+import { deleteItem } from "@services/dynamoDb";
 
 const remove: ValidatedEventAPIGatewayProxyEvent<void> = async (event) => {
   const { documentHash } = event.pathParameters;
@@ -12,15 +12,14 @@ const remove: ValidatedEventAPIGatewayProxyEvent<void> = async (event) => {
     throw new createError.BadRequest(`documentHash (string) required`);
   }
 
-  await client
-    .delete({
+  try {
+    await deleteItem({
       TableName: process.env.REVOCATION_TABLE,
       Key: { documentHash },
-    })
-    .promise()
-    .catch((e) => {
-      throw new createError.InternalServerError(e);
-    });
+    }); 
+  } catch (e) {
+    throw new createError.InternalServerError(e);
+  }
 
   return formatJSONResponse({
     success: true,
