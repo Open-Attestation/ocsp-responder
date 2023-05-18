@@ -29,11 +29,11 @@ const query: ValidatedEventAPIGatewayProxyEvent<void> = async (event) => {
     Object.getPrototypeOf(data) === Object.prototype
   ) {
     return formatJSONResponse({ revoked: false, documentHash });
-  } else if (data && data.documentHash && data.Item.reasonCode !== undefined) {
+  } else if (data && data.documentHash && data.reasonCode !== undefined) {
     return formatJSONResponse({
       revoked: true,
-      documentHash: data.Item.documentHash,
-      reasonCode: data.Item.reasonCode,
+      documentHash: data.documentHash,
+      reasonCode: data.reasonCode,
     });
   } else {
     throw new createError.InternalServerError(
