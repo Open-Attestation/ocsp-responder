@@ -18,7 +18,7 @@
     "@middy/http-cors": "^3.0.4",
     "@middy/http-error-handler": "^3.0.3",
     "@middy/http-json-body-parser": "^3.0.3",
-    "aws-sdk": "^2.1379.0",
+    "aws-sdk": "^2.1428.0",
     "http-errors": "^2.0.0",
     "serverless-stack-termination-protection": "^2.0.2",
     "yargs": "^17.7.2"
