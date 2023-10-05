@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.332.0",
-    "@aws-sdk/lib-dynamodb": "^3.332.0",
+    "@aws-sdk/lib-dynamodb": "^3.382.0",
     "@middy/core": "^3.0.3",
     "@middy/http-cors": "^3.0.4",
     "@middy/http-error-handler": "^3.0.3",
