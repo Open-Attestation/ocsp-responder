@@ -12,7 +12,7 @@ const stage = getArgumentValuesOrDefault({
 const serverlessConfiguration = async (): Promise<AWS> => {
   const service = `ocsp-responder`;
 
-  const config : AWS = {
+  const config: AWS = {
     frameworkVersion: '3',
     configValidationMode: 'error',
     useDotenv: true,
@@ -23,6 +23,8 @@ const serverlessConfiguration = async (): Promise<AWS> => {
       "serverless-domain-manager",
       "serverless-offline",
       "serverless-stack-termination-protection",
+      "serverless-vpc-discovery",
+      "serverless-associate-waf"
     ],
     provider: {
       stage,
@@ -81,6 +83,25 @@ const serverlessConfiguration = async (): Promise<AWS> => {
     // import the function via paths
     functions: { insert, query, remove },
     custom: {
+      "associateWaf": { "name": "${env:WAF_NAME, ''}", "version": "V2" },
+      "vpcDiscovery": {
+        "vpcName": "${env:VPC_NAME}",
+        "subnets": [
+          {
+            "tagKey": "Name",
+            "tagValues": [
+              "${env:VPC_SUBNET_NAME}"
+            ]
+          }
+        ],
+        "securityGroups": [
+          {
+            "names": [
+              "${env:VPC_SECURITY_GROUP_NAME}"
+            ]
+          }
+        ]
+      },
       serverlessTerminationProtection: {
         stages: ["production", "stg"],
       },
@@ -134,11 +155,11 @@ const serverlessConfiguration = async (): Promise<AWS> => {
   };
 
   if (process.env.ROLE_PERMISSIONS_BOUNDARY) {
-    config.provider.iam.role["permissionsBoundary"] = process.env.ROLE_PERMISSIONS_BOUNDARY; 
+    config.provider.iam.role["permissionsBoundary"] = process.env.ROLE_PERMISSIONS_BOUNDARY;
   }
 
   if (process.env.DEPLOYMENT_BUCKET) {
-    config.provider.deploymentBucket = process.env.DEPLOYMENT_BUCKET; 
+    config.provider.deploymentBucket = process.env.DEPLOYMENT_BUCKET;
   }
 
   return config;

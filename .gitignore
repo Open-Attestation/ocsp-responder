@@ -11,3 +11,4 @@ jspm_packages
 .webpack
 
 .env
+.DS_Store
