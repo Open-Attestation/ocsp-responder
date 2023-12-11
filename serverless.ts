@@ -71,7 +71,6 @@ const serverlessConfiguration = async (): Promise<AWS> => {
           accessLogging: true,
           executionLogging: true,
           level: "INFO",
-          roleManagedExternally: true,
           fullExecutionData: false,
         },
       },
@@ -84,24 +83,6 @@ const serverlessConfiguration = async (): Promise<AWS> => {
     functions: { insert, query, remove },
     custom: {
       "associateWaf": { "name": "${env:WAF_NAME, ''}", "version": "V2" },
-      "vpcDiscovery": {
-        "vpcName": "${env:VPC_NAME}",
-        "subnets": [
-          {
-            "tagKey": "Name",
-            "tagValues": [
-              "${env:VPC_SUBNET_NAME}"
-            ]
-          }
-        ],
-        "securityGroups": [
-          {
-            "names": [
-              "${env:VPC_SECURITY_GROUP_NAME}"
-            ]
-          }
-        ]
-      },
       serverlessTerminationProtection: {
         stages: ["production", "stg"],
       },
@@ -160,6 +141,27 @@ const serverlessConfiguration = async (): Promise<AWS> => {
 
   if (process.env.DEPLOYMENT_BUCKET) {
     config.provider.deploymentBucket = process.env.DEPLOYMENT_BUCKET;
+  }
+
+  if (process.env.VPC_NAME) {
+    config.custom.vpcDiscovery = {
+      "vpcName": "${env:VPC_NAME}",
+      "subnets": [
+        {
+          "tagKey": "Name",
+          "tagValues": [
+            "${env:VPC_SUBNET_NAME}"
+          ]
+        }
+      ],
+      "securityGroups": [
+        {
+          "names": [
+            "${env:VPC_SECURITY_GROUP_NAME}"
+          ]
+        }
+      ]
+    }
   }
 
   return config;
