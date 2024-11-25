@@ -173,5 +173,6 @@ Remove an entry from the revocation table:
 | removeFromCRL        | 8    |
 | privilegeWithdrawn   | 9    |
 | aACompromise         | 10   |
+| suspended            | 1001 |
 
 > **_NOTE:_** The code number 7 is not used
