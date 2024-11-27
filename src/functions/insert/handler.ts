@@ -7,7 +7,7 @@ import { putItem } from "@services/dynamoDb";
 
 import schema from "./schema";
 
-const REASON_CODES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const REASON_CODES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1001];
 
 const insert: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
   const { documentHash, reasonCode } = event.body;
